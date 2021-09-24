@@ -1,19 +1,22 @@
 package main
 
 import (
-	"encoding/json"
+	"encoding/csv"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
+	"time"
 )
 
 type Stats struct {
 	StatByLetter map[string]*Stat
 
 	// Working variables - not serialized
-	statsFile string
+	csvFile string
 }
 
 type Stat struct {
@@ -28,16 +31,16 @@ type Stat struct {
 
 // NewStats loads the stats from the fileName if found otherwise
 // returns empty stats
-func NewStats(statsFile string) *Stats {
+func NewStats(csvFile string) *Stats {
 	s := &Stats{
-		statsFile:    statsFile,
+		csvFile:      csvFile,
 		StatByLetter: map[string]*Stat{},
 	}
 	s.Load()
 	return s
 }
 
-func (s *Stats) Add(tx, rx rune, reactionTime float64) {
+func (s *Stats) Add(tx, rx string, reactionTime float64) {
 	letter := string(tx)
 	stat := s.StatByLetter[letter]
 	if stat == nil {
@@ -167,44 +170,45 @@ func (s *Stats) Summary() {
 	}
 }
 
-// Store stores the stats to s.statsFile if set
-func (s *Stats) Store() {
-	if s.statsFile == "" {
-		return
-	}
-	out, err := os.Create(s.statsFile)
-	if err != nil {
-		log.Fatalf("error opening statsfile: %v", err)
-	}
-	defer out.Close()
-	encoder := json.NewEncoder(out)
-	encoder.SetIndent("", "\t")
-	// Encode into the buffer
-	err = encoder.Encode(&s)
-	if err != nil {
-		log.Fatalf("error writing stats file: %v", err)
-	}
-}
-
-// Load loads the stats from s.statsFile if set
+// Load loads the stats from s.csvFile if set
 func (s *Stats) Load() {
-	if s.statsFile == "" {
-		return
-	}
-	_, err := os.Stat(s.statsFile)
-	if err != nil {
-		log.Printf("statsfile %q does not exist -- will create", s.statsFile)
-		return
-	}
-	in, err := os.Open(s.statsFile)
+	in, err := os.Open(s.csvFile)
 	if err != nil {
 		log.Fatalf("error opening statsfile: %v", err)
 	}
 	defer in.Close()
-	decoder := json.NewDecoder(in)
-	err = decoder.Decode(s)
-	if err != nil {
-		log.Fatalf("error reading statsfile: %v", err)
+
+	r := csv.NewReader(in)
+	first := true
+	for {
+		row, err := r.Read()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			log.Fatalf("Failed to read csv log: %v", err)
+		}
+		if first {
+			first = false
+			continue
+		}
+		if len(row) != 5 {
+			log.Fatalf("Ignoring bad line in csv log: %q", row)
+			continue
+		}
+		when, err := time.Parse(timeFormat, row[0])
+		if err != nil {
+			log.Fatalf("Failed to parse time %q from csv log: %v", row[0], err)
+		}
+		_ = when
+		tx := row[1]
+		rx := row[2]
+		reactionTime, err := strconv.ParseFloat(row[4], 64)
+		if err != nil {
+			log.Fatalf("Failed to parse duration %q from csv log: %v", row[4], err)
+		}
+		s.Add(tx, rx, reactionTime)
 	}
-	log.Printf("loaded statsfile %q", s.statsFile)
+
+	log.Printf("loaded statsfile %q", s.csvFile)
 }

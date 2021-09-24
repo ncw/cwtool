@@ -19,7 +19,7 @@ var (
 	sampleRate = flag.Int("samplerate", 44100, "sample rate")
 	wpm        = flag.Float64("wpm", 25.0, "WPM to send at")
 	frequency  = flag.Float64("frequency", 600.0, "HZ of morse")
-	statsFile  = flag.String("stats", "ncwtesterstats.json", "File to load/store statistics data")
+	logFile    = flag.String("log", "ncwtesterstats.csv", "CSV file to log attempts")
 )
 
 const (
@@ -224,8 +224,7 @@ func run() error {
 	cw.string(" vvv")
 	syncPlay(p)
 
-	stats := NewStats(*statsFile)
-	defer stats.Store()
+	csvLog := NewCSVLog(*logFile)
 
 	letters := "abcdefghijklmnopqrstuvwxyz0123456789.=/,?"
 
@@ -252,10 +251,11 @@ outer:
 			reactionTime := time.Since(finishedPlaying)
 			ok := rx == tx
 			fmt.Printf("%d/%d: tx %c: rx %c 0x%X: reaction time = %dms, OK %v\n", i+1, len(letters), tx, rx, rx, ms(reactionTime), ok)
-			stats.Add(tx, rx, reactionTime.Seconds())
+			csvLog.Add(tx, rx, reactionTime)
 		}
 	}
 
+	stats := NewStats(*logFile)
 	stats.Summary()
 
 	return nil
