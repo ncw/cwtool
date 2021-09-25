@@ -96,14 +96,17 @@ type Stats struct {
 	Total        *Stat
 
 	// Working variables - not serialized
-	csvFile string
+	csvFile    string
+	timeCutoff time.Duration
+	rows       int
 }
 
 // NewStats loads the stats from the fileName if found otherwise
 // returns empty stats
-func NewStats(csvFile string) *Stats {
+func NewStats(csvFile string, timeCutoff time.Duration) *Stats {
 	s := &Stats{
 		csvFile:      csvFile,
+		timeCutoff:   timeCutoff,
 		StatByLetter: map[string]*Stat{},
 		Total:        NewStat("total"),
 	}
@@ -120,6 +123,7 @@ func (s *Stats) Add(tx, rx string, reactionTime float64) {
 	}
 	stat.Add(tx, rx, reactionTime)
 	s.Total.Add(tx, rx, reactionTime)
+	s.rows++
 }
 
 func bar(width int, maxValue, min, avg, max float64) string {
@@ -224,7 +228,13 @@ func (s *Stats) Load() {
 		if err != nil {
 			log.Fatalf("Failed to parse time %q from csv log: %v", row[0], err)
 		}
-		_ = when
+		// Don't load rows older than cutoff
+		if s.timeCutoff > 0 {
+			ago := time.Since(when)
+			if ago > s.timeCutoff {
+				continue
+			}
+		}
 		tx := row[1]
 		rx := row[2]
 		reactionTime, err := strconv.ParseFloat(row[4], 64)
@@ -234,5 +244,5 @@ func (s *Stats) Load() {
 		s.Add(tx, rx, reactionTime)
 	}
 
-	log.Printf("loaded statsfile %q", s.csvFile)
+	log.Printf("loaded %d rows from statsfile %q", s.rows, s.csvFile)
 }

@@ -21,6 +21,7 @@ var (
 	wpm        = flag.Float64("wpm", 25.0, "WPM to send at")
 	frequency  = flag.Float64("frequency", 600.0, "HZ of morse")
 	logFile    = flag.String("log", "ncwtesterstats.csv", "CSV file to log attempts")
+	timeCutoff = flag.Duration("cutoff", 0, "If set, ignore stats older than this")
 )
 
 const (
@@ -261,7 +262,7 @@ outer:
 		}
 	}
 
-	stats := NewStats(*logFile)
+	stats := NewStats(*logFile, *timeCutoff)
 	stats.Summary()
 
 	return nil
