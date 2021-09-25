@@ -11,6 +11,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/fatih/color"
 	"github.com/hajimehoshi/oto/v2"
 	"golang.org/x/term"
 )
@@ -250,7 +251,12 @@ outer:
 			}
 			reactionTime := time.Since(finishedPlaying)
 			ok := rx == tx
-			fmt.Printf("%d/%d: tx %c: rx %c 0x%X: reaction time = %dms, OK %v\n", i+1, len(letters), tx, rx, rx, ms(reactionTime), ok)
+			fmt.Printf("%2d/%2d: %c: reaction time %5dms: ", i+1, len(letters), tx, ms(reactionTime))
+			if ok {
+				color.Green("OK\n")
+			} else {
+				color.Red(fmt.Sprintf("BAD %c\n", rx))
+			}
 			csvLog.Add(tx, rx, reactionTime)
 		}
 	}
