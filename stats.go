@@ -81,6 +81,11 @@ func (s *Stat) Percentile(p float64) float64 {
 	}
 	s.sort()
 	i := int(math.Round((p / 100) * float64(len(s.ReactionTimes))))
+	if i < 0 {
+		i = 0
+	} else if i >= len(s.ReactionTimes) {
+		i = len(s.ReactionTimes) - 1
+	}
 	return s.ReactionTimes[i]
 }
 
