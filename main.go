@@ -22,6 +22,7 @@ var (
 	frequency  = flag.Float64("frequency", 600.0, "HZ of morse")
 	logFile    = flag.String("log", "ncwtesterstats.csv", "CSV file to log attempts")
 	timeCutoff = flag.Duration("cutoff", 0, "If set, ignore stats older than this")
+	letters    = flag.String("letters", "abcdefghijklmnopqrstuvwxyz0123456789.=/,?", "Letters to test")
 )
 
 const (
@@ -228,14 +229,18 @@ func run() error {
 
 	csvLog := NewCSVLog(*logFile)
 
-	letters := "abcdefghijklmnopqrstuvwxyz0123456789.=/,?"
-
 outer:
 	for {
-		if !yorn(fmt.Sprintf("Start test round with %d letters?", len(letters))) {
+		// Bulk up the letters
+		var testLetters = shuffleString(*letters)
+		for len(testLetters)+len(*letters) <= 50 {
+			testLetters += shuffleString(*letters)
+		}
+		if !yorn(fmt.Sprintf("Start test round with %d letters?", len(testLetters))) {
 			break outer
 		}
-		for i, tx := range shuffleString(letters) {
+
+		for i, tx := range testLetters {
 			p.Reset()
 			cw.reset()
 			cw.rune(' ')
@@ -252,7 +257,7 @@ outer:
 			}
 			reactionTime := time.Since(finishedPlaying)
 			ok := rx == tx
-			fmt.Printf("%2d/%2d: %c: reaction time %5dms: ", i+1, len(letters), tx, ms(reactionTime))
+			fmt.Printf("%2d/%2d: %c: reaction time %5dms: ", i+1, len(testLetters), tx, ms(reactionTime))
 			if ok {
 				color.Green("OK\n")
 			} else {
