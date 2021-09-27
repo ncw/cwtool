@@ -213,6 +213,7 @@ func (s *Stats) Load() {
 
 	r := csv.NewReader(in)
 	first := true
+	location := time.Now().Location()
 	for {
 		row, err := r.Read()
 		if err == io.EOF {
@@ -229,7 +230,7 @@ func (s *Stats) Load() {
 			log.Fatalf("Ignoring bad line in csv log: %q", row)
 			continue
 		}
-		when, err := time.Parse(timeFormat, row[0])
+		when, err := time.ParseInLocation(timeFormat, row[0], location)
 		if err != nil {
 			log.Fatalf("Failed to parse time %q from csv log: %v", row[0], err)
 		}
