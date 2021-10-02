@@ -101,21 +101,15 @@ type Stats struct {
 	Total        *Stat
 
 	// Working variables - not serialized
-	csvFile    string
-	timeCutoff time.Duration
-	rows       int
+	rows int
 }
 
-// NewStats loads the stats from the fileName if found otherwise
-// returns empty stats
-func NewStats(csvFile string, timeCutoff time.Duration) *Stats {
+// NewStats creates an empty NewStats
+func NewStats() *Stats {
 	s := &Stats{
-		csvFile:      csvFile,
-		timeCutoff:   timeCutoff,
 		StatByLetter: map[string]*Stat{},
 		Total:        NewStat("total"),
 	}
-	s.Load()
 	return s
 }
 
@@ -193,6 +187,14 @@ func (s *Stats) Summary() {
 	}
 
 	fmt.Printf("----\n")
+	s.TotalSummary()
+}
+
+// TotalSummary prints the total stats only
+func (s *Stats) TotalSummary() {
+	if s.rows <= 0 {
+		return
+	}
 	fmt.Printf("%s: min %6.3f p50 %6.3f p75 %6.3f p90 %6.3f errors %5.1f%%\n",
 		s.Total.Name,
 		s.Total.Min(),
@@ -203,9 +205,9 @@ func (s *Stats) Summary() {
 	)
 }
 
-// Load loads the stats from s.csvFile if set
-func (s *Stats) Load() {
-	in, err := os.Open(s.csvFile)
+// Load loads the stats from csvFile if set
+func (s *Stats) Load(csvFile string, timeCutoff time.Duration) {
+	in, err := os.Open(csvFile)
 	if err != nil {
 		log.Fatalf("error opening statsfile: %v", err)
 	}
@@ -235,9 +237,9 @@ func (s *Stats) Load() {
 			log.Fatalf("Failed to parse time %q from csv log: %v", row[0], err)
 		}
 		// Don't load rows older than cutoff
-		if s.timeCutoff > 0 {
+		if timeCutoff > 0 {
 			ago := time.Since(when)
-			if ago > s.timeCutoff {
+			if ago > timeCutoff {
 				continue
 			}
 		}
@@ -250,5 +252,5 @@ func (s *Stats) Load() {
 		s.Add(tx, rx, reactionTime)
 	}
 
-	log.Printf("loaded %d rows from statsfile %q", s.rows, s.csvFile)
+	log.Printf("loaded %d rows from statsfile %q", s.rows, csvFile)
 }

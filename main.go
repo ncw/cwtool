@@ -224,10 +224,9 @@ func run() error {
 
 	cw := newCWPlayer()
 	p := c.NewPlayer(cw)
-	cw.string(" vvv")
-	syncPlay(p)
 
 	csvLog := NewCSVLog(*logFile)
+	sessionStats := NewStats()
 
 outer:
 	for {
@@ -239,6 +238,12 @@ outer:
 		if !yorn(fmt.Sprintf("Start test round with %d letters?", len(testLetters))) {
 			break outer
 		}
+
+		p.Reset()
+		cw.string(" vvv   ")
+		syncPlay(p)
+
+		roundStats := NewStats()
 
 		for i, tx := range testLetters {
 			p.Reset()
@@ -264,10 +269,18 @@ outer:
 				color.Red(fmt.Sprintf("BAD %c\n", rx))
 			}
 			csvLog.Add(tx, rx, reactionTime)
+			roundStats.Add(string(tx), string(rx), reactionTime.Seconds())
+			sessionStats.Add(string(tx), string(rx), reactionTime.Seconds())
 		}
-	}
 
-	stats := NewStats(*logFile, *timeCutoff)
+		fmt.Println("Round stats")
+		roundStats.TotalSummary()
+	}
+	fmt.Println("Session stats")
+	sessionStats.TotalSummary()
+
+	stats := NewStats()
+	stats.Load(*logFile, *timeCutoff)
 	stats.Summary()
 
 	return nil
