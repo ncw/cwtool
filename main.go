@@ -23,6 +23,7 @@ var (
 	logFile    = flag.String("log", "ncwtesterstats.csv", "CSV file to log attempts")
 	timeCutoff = flag.Duration("cutoff", 0, "If set, ignore stats older than this")
 	letters    = flag.String("letters", "abcdefghijklmnopqrstuvwxyz0123456789.=/,?", "Letters to test")
+	group      = flag.Int("group", 1, "Send letters in groups this big")
 )
 
 const (
@@ -235,7 +236,15 @@ outer:
 		for len(testLetters)+len(*letters) <= 50 {
 			testLetters += shuffleString(*letters)
 		}
-		if !yorn(fmt.Sprintf("Start test round with %d letters?", len(testLetters))) {
+		// Make sure they are an whole number of groups
+		for {
+			remainder := len(testLetters) % *group
+			if remainder == 0 {
+				break
+			}
+			testLetters += string((*letters)[rand.Intn(len(*letters))])
+		}
+		if !yorn(fmt.Sprintf("Start test round with %d letters and %d groups?", len(testLetters), len(testLetters) / *group)) {
 			break outer
 		}
 
@@ -246,13 +255,18 @@ outer:
 		roundStats := NewStats()
 
 		for i, tx := range testLetters {
-			p.Reset()
-			cw.reset()
-			cw.rune(' ')
-			cw.rune(tx)
-			// cwDuration := cw.duration()
-			// startPlaying := time.Now()
-			syncPlay(p)
+			// Send all the letters at the start of the group
+			if i%*group == 0 {
+				p.Reset()
+				cw.reset()
+				cw.rune(' ')
+				for j := i; j < i+*group; j++ {
+					cw.rune(rune(testLetters[j]))
+				}
+				// cwDuration := cw.duration()
+				// startPlaying := time.Now()
+				syncPlay(p)
+			}
 			finishedPlaying := time.Now()
 			// fmt.Printf("time to play %dms, expected %dms, diff=%dms\n", ms(finishedPlaying.Sub(startPlaying)), ms(cwDuration), ms(finishedPlaying.Sub(startPlaying)-cwDuration))
 
