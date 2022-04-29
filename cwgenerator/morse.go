@@ -1,4 +1,4 @@
-package main
+package cwgenerator
 
 var morseCode = map[rune]string{
 	'A': ".-",
