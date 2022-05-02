@@ -21,11 +21,18 @@ func New(opt cwgenerator.Options) (*Player, error) {
 	}
 	<-ready
 	generator := cwgenerator.New(opt)
-	return &Player{
+	p := &Player{
 		Generator: generator,
 		context:   context,
 		player:    context.NewPlayer(generator),
-	}, nil
+	}
+	p.player.Reset()
+	return p, nil
+}
+
+// Starts the player playing
+func (p *Player) Play() {
+	p.player.Play()
 }
 
 // Resets the audio
