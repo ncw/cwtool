@@ -1,6 +1,7 @@
 // +build linux
+
 // Input device event monitor.
-package main
+package keymorse
 
 // Could try pure go evdev module github.com/holoplot/go-evdev
 
@@ -20,16 +21,18 @@ import (
 
 	//evdev "github.com/holoplot/go-evdev"
 	evdev "github.com/gvalkov/golang-evdev"
+	"github.com/ncw/ncwtester/cmd"
 	"github.com/ncw/ncwtester/cwgenerator"
 	"github.com/ncw/ncwtester/cwplayer"
+	"github.com/spf13/cobra"
 )
 
 var (
-	sampleRate = flag.Int("samplerate", 44100, "sample rate")
-	wpm        = flag.Float64("wpm", 25.0, "WPM to send at")
-	frequency  = flag.Float64("frequency", 600.0, "HZ of morse")
-	logger     = flag.Bool("logger", false, "Set this to start the logger (done automatically)")
-	debug      = flag.Bool("v", false, "Verbose debugging")
+	sampleRate int
+	wpm        float64
+	frequency  float64
+	logger     bool
+	debug      bool
 )
 
 const (
@@ -39,11 +42,37 @@ const (
 	maxSampleValue  = 32767
 )
 
+// subCmd represents the keymorse command
+var subCmd = &cobra.Command{
+	Use:   "keymorse",
+	Short: "Snoop on all keypresses and turn into morse",
+	Long: `This command installs a listener to listen to all key presses
+and turns them into morse code.
+
+Since it snoops key presses from all applications, it requires root
+privileges. It will use sudo to start the keylistener so expect a sudo
+prompt.
+`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return run()
+	},
+}
+
+func init() {
+	cmd.Root.AddCommand(subCmd)
+	flags := subCmd.Flags()
+	flags.IntVarP(&sampleRate, "samplerate", "", 44100, "sample rate")
+	flags.Float64VarP(&wpm, "wpm", "", 25.0, "WPM to send at")
+	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of morse")
+	flags.BoolVarP(&logger, "logger", "", false, "Set this to start the logger (done automatically)")
+	_ = flags.MarkHidden("logger")
+}
+
 func debugf(format string, a ...interface{}) {
-	if !*debug {
+	if !cmd.Debug {
 		return
 	}
-	if *logger {
+	if logger {
 		os.Stderr.WriteString("K: ")
 	} else {
 		os.Stderr.WriteString("M: ")
@@ -212,9 +241,9 @@ func runLogger(args []string) error {
 func runMorser(in io.Reader) error {
 	bufIn := bufio.NewReader(in)
 	opt := cwgenerator.Options{
-		WPM:             *wpm,
-		Frequency:       *frequency,
-		SampleRate:      *sampleRate,
+		WPM:             wpm,
+		Frequency:       frequency,
+		SampleRate:      sampleRate,
 		ChannelNum:      channelNum,
 		BitDepthInBytes: bitDepthInBytes,
 		MaxSampleValue:  maxSampleValue,
@@ -260,8 +289,8 @@ func start() error {
 	if err != nil {
 		return fmt.Errorf("failed find absolute path for %q: %w", os.Args[0], err)
 	}
-	args := []string{binary, "-logger"}
-	args = append(args, os.Args[1:]...)
+	args := []string{binary, os.Args[1], "--logger"}
+	args = append(args, os.Args[2:]...)
 	cmd := exec.Command("sudo", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
@@ -285,16 +314,14 @@ func start() error {
 	return runMorser(stdout)
 }
 
-func main() {
+func run() error {
 	rand.Seed(time.Now().UnixNano())
 	flag.Parse()
 	var err error
-	if *logger {
+	if logger {
 		err = runLogger(flag.Args())
 	} else {
 		err = start()
 	}
-	if err != nil {
-		log.Fatal(err)
-	}
+	return err
 }

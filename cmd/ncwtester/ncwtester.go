@@ -1,7 +1,6 @@
-package main
+package ncwtester
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"math/rand"
@@ -10,19 +9,21 @@ import (
 	"unicode"
 
 	"github.com/fatih/color"
+	"github.com/ncw/ncwtester/cmd"
 	"github.com/ncw/ncwtester/cwgenerator"
 	"github.com/ncw/ncwtester/cwplayer"
+	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
 
 var (
-	sampleRate = flag.Int("samplerate", 44100, "sample rate")
-	wpm        = flag.Float64("wpm", 25.0, "WPM to send at")
-	frequency  = flag.Float64("frequency", 600.0, "HZ of morse")
-	logFile    = flag.String("log", "ncwtesterstats.csv", "CSV file to log attempts")
-	timeCutoff = flag.Duration("cutoff", 0, "If set, ignore stats older than this")
-	letters    = flag.String("letters", "abcdefghijklmnopqrstuvwxyz0123456789.=/,?", "Letters to test")
-	group      = flag.Int("group", 1, "Send letters in groups this big")
+	sampleRate int
+	wpm        float64
+	frequency  float64
+	logFile    string
+	timeCutoff time.Duration
+	letters    string
+	group      int
 )
 
 const (
@@ -30,6 +31,35 @@ const (
 	bitDepthInBytes = 2
 	maxSampleValue  = 32767
 )
+
+// subCmd represents the ncwtester command
+var subCmd = &cobra.Command{
+	Use:   "ncwtester",
+	Short: "See how your morse receiving is going",
+	Long: `This measures and keep track of your morse code learning progress.
+
+It sends morse characters for you to receive and times how quickly you
+receive each one.
+
+It can send a group of characters and you can select which characters
+are sent.
+`,
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return run()
+	},
+}
+
+func init() {
+	cmd.Root.AddCommand(subCmd)
+	flags := subCmd.Flags()
+	flags.IntVarP(&sampleRate, "samplerate", "s", 44100, "sample rate")
+	flags.Float64VarP(&wpm, "wpm", "", 25.0, "WPM to send at")
+	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of morse")
+	flags.StringVarP(&logFile, "log", "", "ncwtesterstats.csv", "CSV file to log attempts")
+	flags.DurationVarP(&timeCutoff, "cutoff", "", 0, "If set, ignore stats older than this")
+	flags.StringVarP(&letters, "letters", "", "abcdefghijklmnopqrstuvwxyz0123456789.=/,?", "Letters to test")
+	flags.IntVarP(&group, "group", "", 1, "Send letters in groups this big")
+}
 
 func shuffleString(s string) string {
 	rs := []rune(s)
@@ -90,9 +120,9 @@ func ms(t time.Duration) int64 {
 
 func run() error {
 	opt := cwgenerator.Options{
-		WPM:             *wpm,
-		Frequency:       *frequency,
-		SampleRate:      *sampleRate,
+		WPM:             wpm,
+		Frequency:       frequency,
+		SampleRate:      sampleRate,
 		ChannelNum:      channelNum,
 		BitDepthInBytes: bitDepthInBytes,
 		MaxSampleValue:  maxSampleValue,
@@ -102,25 +132,25 @@ func run() error {
 		return fmt.Errorf("failed to make cw generator: %w", err)
 	}
 
-	csvLog := NewCSVLog(*logFile)
+	csvLog := NewCSVLog(logFile)
 	sessionStats := NewStats()
 
 outer:
 	for {
 		// Bulk up the letters
-		var testLetters = shuffleString(*letters)
-		for len(testLetters)+len(*letters) <= 50 {
-			testLetters += shuffleString(*letters)
+		var testLetters = shuffleString(letters)
+		for len(testLetters)+len(letters) <= 50 {
+			testLetters += shuffleString(letters)
 		}
 		// Make sure they are an whole number of groups
 		for {
-			remainder := len(testLetters) % *group
+			remainder := len(testLetters) % group
 			if remainder == 0 {
 				break
 			}
-			testLetters += string((*letters)[rand.Intn(len(*letters))])
+			testLetters += string((letters)[rand.Intn(len(letters))])
 		}
-		if !yorn(fmt.Sprintf("Start test round with %d letters and %d groups?", len(testLetters), len(testLetters) / *group)) {
+		if !yorn(fmt.Sprintf("Start test round with %d letters and %d groups?", len(testLetters), len(testLetters)/group)) {
 			break outer
 		}
 
@@ -132,11 +162,11 @@ outer:
 
 		for i, tx := range testLetters {
 			// Send all the letters at the start of the group
-			if i%*group == 0 {
+			if i%group == 0 {
 				cw.Reset()
 				cw.Clear()
 				cw.Rune(' ')
-				for j := i; j < i+*group; j++ {
+				for j := i; j < i+group; j++ {
 					cw.Rune(rune(testLetters[j]))
 				}
 				// cwDuration := cw.duration()
@@ -170,16 +200,8 @@ outer:
 	sessionStats.TotalSummary()
 
 	stats := NewStats()
-	stats.Load(*logFile, *timeCutoff)
+	stats.Load(logFile, timeCutoff)
 	stats.Summary()
 
 	return nil
-}
-
-func main() {
-	rand.Seed(time.Now().UnixNano())
-	flag.Parse()
-	if err := run(); err != nil {
-		panic(err)
-	}
 }

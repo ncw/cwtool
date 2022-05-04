@@ -1,4 +1,6 @@
-package main
+// +build linux
+
+package keymorse
 
 import evdev "github.com/gvalkov/golang-evdev"
 

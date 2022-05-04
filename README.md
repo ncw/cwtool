@@ -4,7 +4,7 @@ Here are a selection of morse code learning tools.
 
 ## ncwtester
 
-This measure and keep track of your morse code learning progress.
+This measures and keep track of your morse code learning progress.
 
 It sends morse characters for you to receive and times how quickly you receive each one.
 
