@@ -10,26 +10,17 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/ncw/ncwtester/cmd"
-	"github.com/ncw/ncwtester/cwgenerator"
+	"github.com/ncw/ncwtester/cwgenerator/cwflags"
 	"github.com/ncw/ncwtester/cwplayer"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
 
 var (
-	sampleRate int
-	wpm        float64
-	frequency  float64
 	logFile    string
 	timeCutoff time.Duration
 	letters    string
 	group      int
-)
-
-const (
-	channelNum      = 2
-	bitDepthInBytes = 2
-	maxSampleValue  = 32767
 )
 
 // subCmd represents the ncwtester command
@@ -52,9 +43,7 @@ are sent.
 func init() {
 	cmd.Root.AddCommand(subCmd)
 	flags := subCmd.Flags()
-	flags.IntVarP(&sampleRate, "samplerate", "s", 44100, "sample rate")
-	flags.Float64VarP(&wpm, "wpm", "", 25.0, "WPM to send at")
-	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of morse")
+	cwflags.Add(flags)
 	flags.StringVarP(&logFile, "log", "", "ncwtesterstats.csv", "CSV file to log attempts")
 	flags.DurationVarP(&timeCutoff, "cutoff", "", 0, "If set, ignore stats older than this")
 	flags.StringVarP(&letters, "letters", "", "abcdefghijklmnopqrstuvwxyz0123456789.=/,?", "Letters to test")
@@ -119,14 +108,7 @@ func ms(t time.Duration) int64 {
 }
 
 func run() error {
-	opt := cwgenerator.Options{
-		WPM:             wpm,
-		Frequency:       frequency,
-		SampleRate:      sampleRate,
-		ChannelNum:      channelNum,
-		BitDepthInBytes: bitDepthInBytes,
-		MaxSampleValue:  maxSampleValue,
-	}
+	opt := cwflags.NewOpt()
 	cw, err := cwplayer.New(opt)
 	if err != nil {
 		return fmt.Errorf("failed to make cw generator: %w", err)

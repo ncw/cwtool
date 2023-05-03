@@ -23,24 +23,18 @@ import (
 	//evdev "github.com/holoplot/go-evdev"
 	evdev "github.com/gvalkov/golang-evdev"
 	"github.com/ncw/ncwtester/cmd"
-	"github.com/ncw/ncwtester/cwgenerator"
+	"github.com/ncw/ncwtester/cwgenerator/cwflags"
 	"github.com/ncw/ncwtester/cwplayer"
 	"github.com/spf13/cobra"
 )
 
 var (
-	sampleRate int
-	wpm        float64
-	frequency  float64
-	logger     bool
-	debug      bool
+	logger bool
+	debug  bool
 )
 
 const (
-	device_glob     = "/dev/input/event*"
-	channelNum      = 2
-	bitDepthInBytes = 2
-	maxSampleValue  = 32767
+	device_glob = "/dev/input/event*"
 )
 
 // subCmd represents the keymorse command
@@ -62,9 +56,7 @@ prompt.
 func init() {
 	cmd.Root.AddCommand(subCmd)
 	flags := subCmd.Flags()
-	flags.IntVarP(&sampleRate, "samplerate", "", 44100, "sample rate")
-	flags.Float64VarP(&wpm, "wpm", "", 25.0, "WPM to send at")
-	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of morse")
+	cwflags.Add(flags)
 	flags.BoolVarP(&logger, "logger", "", false, "Set this to start the logger (done automatically)")
 	_ = flags.MarkHidden("logger")
 }
@@ -241,15 +233,7 @@ func runLogger(args []string) error {
 // Read keys from in and send morse
 func runMorser(in io.Reader) error {
 	bufIn := bufio.NewReader(in)
-	opt := cwgenerator.Options{
-		WPM:             wpm,
-		Frequency:       frequency,
-		SampleRate:      sampleRate,
-		ChannelNum:      channelNum,
-		BitDepthInBytes: bitDepthInBytes,
-		MaxSampleValue:  maxSampleValue,
-		Continuous:      true,
-	}
+	opt := cwflags.NewOpt()
 	cw, err := cwplayer.New(opt)
 	if err != nil {
 		return fmt.Errorf("failed to make cw generator: %w", err)

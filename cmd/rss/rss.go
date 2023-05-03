@@ -10,24 +10,15 @@ import (
 
 	"github.com/mmcdole/gofeed"
 	"github.com/ncw/ncwtester/cmd"
-	"github.com/ncw/ncwtester/cwgenerator"
+	"github.com/ncw/ncwtester/cwgenerator/cwflags"
 	"github.com/ncw/ncwtester/cwplayer"
 	"github.com/spf13/cobra"
 )
 
 var (
-	sampleRate int
-	wpm        float64
-	frequency  float64
-	url        string
-	user       string
-	pass       string
-)
-
-const (
-	channelNum      = 2
-	bitDepthInBytes = 2
-	maxSampleValue  = 32767
+	url  string
+	user string
+	pass string
 )
 
 // subCmd represents the rss ommand
@@ -49,12 +40,10 @@ Most RSS, Atom and JSON feed types are supported.
 func init() {
 	cmd.Root.AddCommand(subCmd)
 	flags := subCmd.Flags()
-	flags.IntVarP(&sampleRate, "samplerate", "s", 44100, "sample rate")
-	flags.Float64VarP(&wpm, "wpm", "", 25.0, "WPM to send at")
-	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of morse")
+	cwflags.Add(flags)
 	flags.StringVarP(&url, "url", "", "", "URL to fetch RSS from")
-	flags.StringVarP(&url, "user", "", "", "Username for URL (optional)")
-	flags.StringVarP(&url, "pass", "", "", "Password for URL (optional)")
+	flags.StringVarP(&user, "user", "", "", "Username for URL (optional)")
+	flags.StringVarP(&pass, "pass", "", "", "Password for URL (optional)")
 }
 
 // Returns a reader to read the RSS from - must be closed afterwards
@@ -101,14 +90,7 @@ func run() error {
 	if url == "" {
 		return fmt.Errorf("need --url parameter to fetch from")
 	}
-	opt := cwgenerator.Options{
-		WPM:             wpm,
-		Frequency:       frequency,
-		SampleRate:      sampleRate,
-		ChannelNum:      channelNum,
-		BitDepthInBytes: bitDepthInBytes,
-		MaxSampleValue:  maxSampleValue,
-	}
+	opt := cwflags.NewOpt()
 	cw, err := cwplayer.New(opt)
 	if err != nil {
 		return fmt.Errorf("failed to make cw generator: %w", err)
