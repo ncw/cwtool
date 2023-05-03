@@ -1,4 +1,5 @@
-// +build linux
+//go:build linux && cgo
+// +build linux,cgo
 
 // Input device event monitor.
 package keymorse
