@@ -1,7 +1,8 @@
 package all
 
 import (
-	_ "github.com/ncw/ncwtester/cmd/keymorse"
-	_ "github.com/ncw/ncwtester/cmd/ncwtester"
-	_ "github.com/ncw/ncwtester/cmd/rss"
+	_ "github.com/ncw/cwtool/cmd/keymorse"
+	_ "github.com/ncw/cwtool/cmd/ncwtester"
+	_ "github.com/ncw/cwtool/cmd/play"
+	_ "github.com/ncw/cwtool/cmd/rss"
 )

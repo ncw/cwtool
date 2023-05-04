@@ -15,10 +15,10 @@ var (
 
 // Root represents the base command when called without any subcommands
 var Root = &cobra.Command{
-	Use:   "ncwtester",
-	Short: "Show help for ncwtester commands.",
+	Use:   "cwtool",
+	Short: "Show help for cwtool commands.",
 	Long: `
-Ncwtester provides a suite of morse code tools.
+Cwtool provides a suite of morse code tools.
 `,
 }
 

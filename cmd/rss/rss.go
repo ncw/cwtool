@@ -9,9 +9,9 @@ import (
 	"strings"
 
 	"github.com/mmcdole/gofeed"
-	"github.com/ncw/ncwtester/cmd"
-	"github.com/ncw/ncwtester/cwgenerator/cwflags"
-	"github.com/ncw/ncwtester/cwplayer"
+	"github.com/ncw/cwtool/cmd"
+	"github.com/ncw/cwtool/cmd/cwflags"
+	"github.com/ncw/cwtool/cw"
 	"github.com/spf13/cobra"
 )
 
@@ -72,7 +72,7 @@ var (
 )
 
 // Simplify and play the string
-func play(cw *cwplayer.Player, s string) {
+func play(cw cw.CW, s string) {
 	// Remove all unknown characters
 	s = removeInvalid.ReplaceAllString(s, "")
 
@@ -82,8 +82,7 @@ func play(cw *cwplayer.Player, s string) {
 	fmt.Println(s)
 	cw.String(s)
 	cw.String(" = ")
-	cw.SyncPlay()
-	cw.Reset()
+	cw.Sync()
 }
 
 func run() error {
@@ -91,12 +90,10 @@ func run() error {
 		return fmt.Errorf("need --url parameter to fetch from")
 	}
 	opt := cwflags.NewOpt()
-	cw, err := cwplayer.New(opt)
+	cw, err := cwflags.NewPlayer(opt)
 	if err != nil {
-		return fmt.Errorf("failed to make cw generator: %w", err)
+		return fmt.Errorf("failed to make cw player: %w", err)
 	}
-
-	cw.Reset()
 
 	fp := gofeed.NewParser()
 	log.Printf("Fetching RSS from %q", url)
@@ -114,5 +111,5 @@ func run() error {
 		play(cw, item.Description)
 	}
 
-	return nil
+	return cw.Close()
 }

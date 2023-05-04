@@ -9,9 +9,8 @@ import (
 	"unicode"
 
 	"github.com/fatih/color"
-	"github.com/ncw/ncwtester/cmd"
-	"github.com/ncw/ncwtester/cwgenerator/cwflags"
-	"github.com/ncw/ncwtester/cwplayer"
+	"github.com/ncw/cwtool/cmd"
+	"github.com/ncw/cwtool/cmd/cwflags"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 )
@@ -109,9 +108,9 @@ func ms(t time.Duration) int64 {
 
 func run() error {
 	opt := cwflags.NewOpt()
-	cw, err := cwplayer.New(opt)
+	cw, err := cwflags.NewPlayer(opt)
 	if err != nil {
-		return fmt.Errorf("failed to make cw generator: %w", err)
+		return fmt.Errorf("failed to make cw player: %w", err)
 	}
 
 	csvLog := NewCSVLog(logFile)
@@ -136,24 +135,21 @@ outer:
 			break outer
 		}
 
-		cw.Reset()
 		cw.String(" vvv   ")
-		cw.SyncPlay()
+		cw.Sync()
 
 		roundStats := NewStats()
 
 		for i, tx := range testLetters {
 			// Send all the letters at the start of the group
 			if i%group == 0 {
-				cw.Reset()
-				cw.Clear()
 				cw.Rune(' ')
 				for j := i; j < i+group; j++ {
 					cw.Rune(rune(testLetters[j]))
 				}
 				// cwDuration := cw.duration()
 				// startPlaying := time.Now()
-				cw.SyncPlay()
+				cw.Sync()
 			}
 			finishedPlaying := time.Now()
 			// fmt.Printf("time to play %dms, expected %dms, diff=%dms\n", ms(finishedPlaying.Sub(startPlaying)), ms(cwDuration), ms(finishedPlaying.Sub(startPlaying)-cwDuration))

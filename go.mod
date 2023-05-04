@@ -1,4 +1,4 @@
-module github.com/ncw/ncwtester
+module github.com/ncw/cwtool
 
 go 1.19
 
@@ -15,6 +15,9 @@ require (
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/ebitengine/purego v0.2.0-alpha.0.20230107011038-a7c4d8fb43b1 // indirect
+	github.com/go-audio/audio v1.0.0 // indirect
+	github.com/go-audio/riff v1.0.0 // indirect
+	github.com/go-audio/wav v1.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

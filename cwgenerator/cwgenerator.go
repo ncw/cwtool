@@ -8,33 +8,23 @@ import (
 	"sync"
 	"time"
 	"unicode"
-)
 
-// Options to configure a Generator
-type Options struct {
-	WPM             float64 // WPM to send morse at
-	Frequency       float64 // Frequency to generate morse at
-	SampleRate      int     // samples per second to generate
-	ChannelNum      int
-	BitDepthInBytes int
-	MaxSampleValue  int
-	Continuous      bool // generates CW continously, never returns EOF from Read
-}
+	"github.com/ncw/cwtool/cw"
+)
 
 // Generator contains state for the morse generation
 type Generator struct {
-	opt          Options
+	opt          *cw.Options
 	sequenceMu   sync.Mutex // hold mutex when adding/removing things from sequence
 	sequence     []byte     // sequence to play samples in
 	sampleLength int        // length of sample in bytes
 	samples      [2][]byte  // samples to play
 	sampleIndex  byte       // index of sample we are playing now
 	sampleOffset int        // how far we've got through that sample
-	eofTime      time.Time
 }
 
 // New makes a new player with the Options passed in
-func New(opt Options) *Generator {
+func New(opt *cw.Options) *Generator {
 	cw := &Generator{
 		opt: opt,
 	}
@@ -103,9 +93,6 @@ func (cw *Generator) Read(buf []byte) (n int, err error) {
 					err = nil
 				} else {
 					err = io.EOF
-					if cw.eofTime.IsZero() {
-						cw.eofTime = time.Now()
-					}
 				}
 				break
 			}

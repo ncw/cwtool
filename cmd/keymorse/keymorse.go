@@ -22,9 +22,8 @@ import (
 
 	//evdev "github.com/holoplot/go-evdev"
 	evdev "github.com/gvalkov/golang-evdev"
-	"github.com/ncw/ncwtester/cmd"
-	"github.com/ncw/ncwtester/cwgenerator/cwflags"
-	"github.com/ncw/ncwtester/cwplayer"
+	"github.com/ncw/cwtool/cmd"
+	"github.com/ncw/cwtool/cmd/cwflags"
 	"github.com/spf13/cobra"
 )
 
@@ -234,12 +233,12 @@ func runLogger(args []string) error {
 func runMorser(in io.Reader) error {
 	bufIn := bufio.NewReader(in)
 	opt := cwflags.NewOpt()
-	cw, err := cwplayer.New(opt)
+	opt.Continuous = true
+	cw, err := cwflags.NewPlayer(opt)
 	if err != nil {
-		return fmt.Errorf("failed to make cw generator: %w", err)
+		return fmt.Errorf("failed to make cw player: %w", err)
 	}
 	cw.String(" vvv")
-	cw.Play()
 
 	line, _, err := bufIn.ReadLine()
 	if err != nil {
