@@ -2,9 +2,7 @@ package rss
 
 import (
 	"fmt"
-	"io"
 	"log"
-	"net/http"
 	"regexp"
 	"strings"
 
@@ -16,9 +14,8 @@ import (
 )
 
 var (
-	url  string
-	user string
-	pass string
+	url         string
+	description bool
 )
 
 // subCmd represents the rss ommand
@@ -31,6 +28,14 @@ This fetches an RSS feed, eg http://feeds.bbci.co.uk/news/uk/rss.xml
 Parses it and sends the items as morse code.
 
 Most RSS, Atom and JSON feed types are supported.
+
+This plays the title of the RSS feed and then the titles of each item
+in the feed.
+
+Each item in the feeed is prefixed with NR x where x counts 1,2,3...
+
+Use --description to add the descriptions of each link in as well as
+their titles.
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run()
@@ -42,29 +47,7 @@ func init() {
 	flags := subCmd.Flags()
 	cwflags.Add(flags)
 	flags.StringVarP(&url, "url", "", "", "URL to fetch RSS from")
-	flags.StringVarP(&user, "user", "", "", "Username for URL (optional)")
-	flags.StringVarP(&pass, "pass", "", "", "Password for URL (optional)")
-}
-
-// Returns a reader to read the RSS from - must be closed afterwards
-func fetch() (io.ReadCloser, error) {
-	log.Printf("Fetching RSS at %q", url)
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("http request %q: %w", url, err)
-	}
-	if user != "" || pass != "" {
-		req.SetBasicAuth(user, pass)
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("fetch RSS %q: %w", url, err)
-	}
-	if resp.StatusCode != http.StatusOK {
-		_ = resp.Body.Close()
-		return nil, fmt.Errorf("bad status %d when RSS %q: %s", resp.StatusCode, url, resp.Status)
-	}
-	return resp.Body, nil
+	flags.BoolVarP(&description, "description", "", false, "If set add the description too")
 }
 
 var (
@@ -102,13 +85,17 @@ func run() error {
 		return fmt.Errorf("rss fetch and parse failed: %w", err)
 	}
 
-	fmt.Printf("Title: %s\n", feed.Title)
-	fmt.Printf("Description: %s\n", feed.Description)
+	play(cw, feed.Title)
+	if description {
+		play(cw, feed.Description)
+	}
 
 	for i, item := range feed.Items {
 		play(cw, fmt.Sprintf("NR %d", i+1))
 		play(cw, item.Title)
-		play(cw, item.Description)
+		if description {
+			play(cw, item.Description)
+		}
 	}
 
 	return cw.Close()
