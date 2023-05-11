@@ -31,12 +31,16 @@ func New(opt *cw.Options) *Generator {
 
 	ditTimeSeconds := wpmToDitTime(opt.WPM)
 	cyclesPerDit := opt.Frequency * ditTimeSeconds
-	// fmt.Printf("cyclesPerDit = %.3f at %.1f Hz\n", cyclesPerDit, opt.Frequency)
+	if cw.opt.Debug {
+		fmt.Printf("cyclesPerDit = %.3f at %.1f Hz\n", cyclesPerDit, opt.Frequency)
+	}
 	// Round cycles per dit to an exact number to avoid clicks
 	// this changes the frequency slightly
 	cyclesPerDit = math.Round(cyclesPerDit)
-	// newFrequency := cyclesPerDit / ditTimeSeconds
-	// fmt.Printf("cyclesPerDit = %.3f at %.1f Hz\n", cyclesPerDit, newFrequency)
+	newFrequency := cyclesPerDit / ditTimeSeconds
+	if cw.opt.Debug {
+		fmt.Printf("cyclesPerDit = %.3f at %.1f Hz\n", cyclesPerDit, newFrequency)
+	}
 
 	samplesPerDit := int(math.Round(float64(opt.SampleRate) * ditTimeSeconds))
 	sampleWidth := opt.ChannelNum * opt.BitDepthInBytes
@@ -123,7 +127,9 @@ func (cw *Generator) Rune(r rune) {
 	r = unicode.ToUpper(r)
 	code := morseCode[r]
 	if code == "" {
-		fmt.Printf("Don't know how to play %v\n", r)
+		if cw.opt.Debug {
+			fmt.Printf("Don't know how to play '%c'\n", r)
+		}
 		return
 	}
 	for _, c := range code {

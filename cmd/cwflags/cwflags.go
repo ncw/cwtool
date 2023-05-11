@@ -2,6 +2,7 @@
 package cwflags
 
 import (
+	"github.com/ncw/cwtool/cmd"
 	"github.com/ncw/cwtool/cw"
 	"github.com/ncw/cwtool/cwfile"
 	"github.com/ncw/cwtool/cwplayer"
@@ -39,6 +40,7 @@ func NewOpt() *cw.Options {
 		BitDepthInBytes: bitDepthInBytes,
 		MaxSampleValue:  maxSampleValue,
 		OutputFile:      outputFile,
+		Debug:           cmd.Debug,
 	}
 }
 
