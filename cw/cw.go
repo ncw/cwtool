@@ -19,6 +19,7 @@ type CW interface {
 // Options to configure the CW generator and player
 type Options struct {
 	WPM             float64 // WPM to send morse at
+	Farnsworth      float64 // Overall speed to send at
 	Frequency       float64 // Frequency to generate morse at
 	SampleRate      int     // samples per second to generate
 	ChannelNum      int

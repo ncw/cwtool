@@ -21,6 +21,7 @@ type Generator struct {
 	samples      [2][]byte  // samples to play
 	sampleIndex  byte       // index of sample we are playing now
 	sampleOffset int        // how far we've got through that sample
+	extraDits    int        // extra dits after each letter
 }
 
 // New makes a new player with the Options passed in
@@ -40,6 +41,33 @@ func New(opt *cw.Options) *Generator {
 	newFrequency := cyclesPerDit / ditTimeSeconds
 	if cw.opt.Debug {
 		fmt.Printf("cyclesPerDit = %.3f at %.1f Hz\n", cyclesPerDit, newFrequency)
+	}
+
+	// Compute number of extra dit times to meet Farnsworth target
+	if opt.Farnsworth > 0 && opt.Farnsworth < opt.WPM {
+		// Time to send one PARIS word is
+		wordTimeNormal := 60 / opt.WPM
+		// Time to send one PARIS word at the Farnsworth speed is
+		wordTimeFarnsworth := 60 / opt.Farnsworth
+		// So we need to slow each word down by this much
+		wordDelay := wordTimeFarnsworth - wordTimeNormal
+		// We put a Farnsworth space in after each letter and
+		// one extra at the end of the word for 6 in PARIS so
+		// the Farnsworth delay must be
+		delay := wordDelay / 6
+		// Calculate what this is in dits
+		extraDits := delay / ditTimeSeconds
+		// Round to nearest dit
+		cw.extraDits = int(extraDits + 0.5)
+		if cw.extraDits <= 0 {
+			cw.extraDits = 1
+		}
+		if cw.opt.Debug {
+			fmt.Printf("Farnsworth at %.1f WPM using %.1f WPM needs %.1f extra dits\n", opt.Farnsworth, opt.WPM, extraDits)
+			actualWordTime := wordTimeNormal + 6*ditTimeSeconds*float64(cw.extraDits)
+			actualWPM := 60 / actualWordTime
+			fmt.Printf("This rounds to %d extra dits which makes an actual Farnsworth of %.1f WPM\n", cw.extraDits, actualWPM)
+		}
 	}
 
 	samplesPerDit := int(math.Round(float64(opt.SampleRate) * ditTimeSeconds))
@@ -119,6 +147,13 @@ func (cw *Generator) Read(buf []byte) (n int, err error) {
 	return n, err
 }
 
+// Add Farnsworth spacing
+func (cw *Generator) _extraDits() {
+	for i := 0; i < cw.extraDits; i++ {
+		cw._out(0)
+	}
+}
+
 // Adds the rune to the output
 func (cw *Generator) Rune(r rune) {
 	cw.sequenceMu.Lock()
@@ -144,12 +179,15 @@ func (cw *Generator) Rune(r rune) {
 			// and we'll write 2 after this
 			// so need 4 more
 			cw._out(0, 0, 0, 0)
+			// And we have an extra Farnsworth space every word
+			cw._extraDits()
 		default:
 			panic("Bad symbol in code")
 		}
 	}
 	// write letter gap of 3 dits - have written one already
 	cw._out(0, 0)
+	cw._extraDits()
 }
 
 // Adds the string to the output
