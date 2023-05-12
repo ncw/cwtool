@@ -58,6 +58,7 @@ func play(cw cw.CW, s string) {
 
 func run(args []string) error {
 	opt := cwflags.NewOpt()
+	opt.Title = strings.Join(args, " ")
 	cw, err := cwflags.NewPlayer(opt)
 	if err != nil {
 		return fmt.Errorf("failed to make cw player: %w", err)

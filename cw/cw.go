@@ -28,4 +28,5 @@ type Options struct {
 	Continuous      bool   // generates CW continously, never returns EOF from Read
 	OutputFile      string // file to send output to
 	Debug           bool   // print info messages to stdout
+	Title           string // title of output to be inserted into WAV output
 }

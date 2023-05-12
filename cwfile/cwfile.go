@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/go-audio/audio"
 	"github.com/go-audio/wav"
@@ -41,6 +42,17 @@ func New(opt *cw.Options) (*Player, error) {
 		opt.Channels,
 		1, // PCM format
 	)
+	software := strings.Join(os.Args, " ")
+	title := opt.Title
+	if title == "" {
+		title = software
+	}
+	encoder.Metadata = &wav.Metadata{
+		Title:    title,
+		Product:  title,
+		Software: software,
+		Artist:   "cwtool",
+	}
 
 	p := &Player{
 		generator: generator,

@@ -72,17 +72,19 @@ func run() error {
 	if url == "" {
 		return fmt.Errorf("need --url parameter to fetch from")
 	}
-	opt := cwflags.NewOpt()
-	cw, err := cwflags.NewPlayer(opt)
-	if err != nil {
-		return fmt.Errorf("failed to make cw player: %w", err)
-	}
 
 	fp := gofeed.NewParser()
 	log.Printf("Fetching RSS from %q", url)
 	feed, err := fp.ParseURL(url)
 	if err != nil {
 		return fmt.Errorf("rss fetch and parse failed: %w", err)
+	}
+
+	opt := cwflags.NewOpt()
+	opt.Title = feed.Title + " " + feed.Published
+	cw, err := cwflags.NewPlayer(opt)
+	if err != nil {
+		return fmt.Errorf("failed to make cw player: %w", err)
 	}
 
 	play(cw, feed.Title)

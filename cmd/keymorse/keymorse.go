@@ -234,6 +234,7 @@ func runMorser(in io.Reader) error {
 	bufIn := bufio.NewReader(in)
 	opt := cwflags.NewOpt()
 	opt.Continuous = true
+	opt.Title = "Keystrokes as Morse Code"
 	cw, err := cwflags.NewPlayer(opt)
 	if err != nil {
 		return fmt.Errorf("failed to make cw player: %w", err)
