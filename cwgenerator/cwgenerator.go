@@ -71,14 +71,14 @@ func New(opt *cw.Options) *Generator {
 	}
 
 	samplesPerDit := int(math.Round(float64(opt.SampleRate) * ditTimeSeconds))
-	sampleWidth := opt.ChannelNum * opt.BitDepthInBytes
+	sampleWidth := opt.Channels * opt.BitDepthInBytes
 	cw.sampleLength = samplesPerDit * sampleWidth
 	cw.samples[0] = make([]byte, cw.sampleLength)
 	cw.samples[1] = make([]byte, cw.sampleLength)
 	dit := cw.samples[1]
 	for i := 0; i < samplesPerDit; i++ {
 		b := int16(math.Sin(2*math.Pi*float64(i)/float64(samplesPerDit)*cyclesPerDit) * 0.3 * float64(opt.MaxSampleValue))
-		for ch := 0; ch < opt.ChannelNum; ch++ {
+		for ch := 0; ch < opt.Channels; ch++ {
 			dit[sampleWidth*i+2*ch] = byte(b)
 			dit[sampleWidth*i+1+2*ch] = byte(b >> 8)
 		}

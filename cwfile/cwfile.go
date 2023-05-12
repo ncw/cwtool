@@ -38,7 +38,7 @@ func New(opt *cw.Options) (*Player, error) {
 	encoder := wav.NewEncoder(out,
 		opt.SampleRate,
 		8*opt.BitDepthInBytes,
-		opt.ChannelNum,
+		opt.Channels,
 		1, // PCM format
 	)
 
@@ -55,7 +55,7 @@ func New(opt *cw.Options) (*Player, error) {
 	p.abuf = make([]int, bufSize)
 	p.aibuf = audio.IntBuffer{
 		Format: &audio.Format{
-			NumChannels: p.opt.ChannelNum,
+			NumChannels: p.opt.Channels,
 			SampleRate:  p.opt.SampleRate,
 		},
 		Data:           p.abuf[:0],

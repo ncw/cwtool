@@ -22,7 +22,7 @@ type Options struct {
 	Farnsworth      float64 // Overall speed to send at
 	Frequency       float64 // Frequency to generate morse at
 	SampleRate      int     // samples per second to generate
-	ChannelNum      int
+	Channels        int
 	BitDepthInBytes int
 	MaxSampleValue  int
 	Continuous      bool   // generates CW continously, never returns EOF from Read

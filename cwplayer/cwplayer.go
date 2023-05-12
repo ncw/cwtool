@@ -17,7 +17,7 @@ type Player struct {
 }
 
 func New(opt *cw.Options) (*Player, error) {
-	context, ready, err := oto.NewContext(opt.SampleRate, opt.ChannelNum, opt.BitDepthInBytes)
+	context, ready, err := oto.NewContext(opt.SampleRate, opt.Channels, opt.BitDepthInBytes)
 	if err != nil {
 		return nil, err
 	}
