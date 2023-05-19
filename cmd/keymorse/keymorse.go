@@ -40,12 +40,17 @@ const (
 var subCmd = &cobra.Command{
 	Use:   "keymorse",
 	Short: "Snoop on all keypresses and turn into morse",
-	Long: `This command installs a listener to listen to all key presses
-and turns them into morse code.
+	Long: `This command installs a listener to listen to all key presses and
+turns them into morse code.
 
 Since it snoops key presses from all applications, it requires root
-privileges. It will use sudo to start the keylistener so expect a sudo
-prompt.
+privileges. It will use sudo to start a keylistener subprocess so
+expect a sudo prompt.
+
+For example to play all keypresses at 30 WPM
+
+    cwtool keymorse --wpm 30
+
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run()

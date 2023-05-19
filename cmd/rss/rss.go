@@ -24,18 +24,41 @@ var subCmd = &cobra.Command{
 	Short: "Fetch RSS and turn into morse code",
 	Long: `Fetch RSS and turn it into morse code
 
-This fetches an RSS feed, eg http://feeds.bbci.co.uk/news/uk/rss.xml
-Parses it and sends the items as morse code.
+This fetches an RSS feed parses it and sends the items as morse code.
+
+Here are some examples of RSS feeds. These are easy to find - just
+search for the name of the publication + RSS.
+
+    http://feeds.bbci.co.uk/news/uk/rss.xml
+    http://www.nytimes.com/services/xml/rss/nyt/HomePage.xml
+    http://rss.cnn.com/rss/cnn_topstories.rss
+    https://news.ycombinator.com/rss
+    http://feeds.wired.com/wired/index
 
 Most RSS, Atom and JSON feed types are supported.
+
+The following info is played from the feed. <BT> is the morse prosign.
+
+- Title <BT>
+- Description of feed <BT> (if --description is used)
+
+Then for each item
+
+- NR # <BT> (# is number starting from 1 and incrementing)
+- Title of item <BT>
+- Description of item <BT> (if --description is used)
 
 This plays the title of the RSS feed and then the titles of each item
 in the feed.
 
-Each item in the feeed is prefixed with NR x where x counts 1,2,3...
-
 Use --description to add the descriptions of each link in as well as
 their titles.
+
+For example to play the BBC UK News to a file at 20 WPM but with 8 WPM
+Farnsworth spacing:
+
+    cwtool rss -v --url http://feeds.bbci.co.uk/news/uk/rss.xml --wpm 20 --farnsworth 8 --out bbc.wav
+
 `,
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run()
