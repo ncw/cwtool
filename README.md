@@ -118,27 +118,26 @@ Snoop on all keypresses and turn into Morse code
 
 
 
-This is a program which listens to keyboard input and plays it as
-Morse code.
+This command listens to all key presses from all applications and
+turns them into Morse code.
+
+It only runs on Linux at the moment.
 
 It is intended as an aid for learning Morse code, or possibly an
 assistive aid.
 
-It needs the `sudo` program to be installed and it will run a
-subprocess using `sudo` to read the keys as this is a privileged
-operation. It will listen to all keyboards it finds (technically input
-devices with an `A` button!).
-
-This command installs a listener to listen to all key presses and
-turns them into Morse code.
+**NB** it will echo sensitive things such as passwords as Morse code
+so beware if using in a public setting.
 
 Since it snoops key presses from all applications, it requires root
-privileges. It will use sudo to start a keylistener subprocess so
-expect a sudo prompt.
+privileges. It will use `sudo` to start a key listener subprocess as
+root so expect a `sudo` prompt. It will not work unless `sudo` is
+installed.
 
-Use `-wpm` to set the words per minute of the Morse code generated.
-The `-logger` is used internally when running the root process to read
-the keypresses.
+It will listen to all keyboards it finds (technically input devices
+with an `A` button!).
+
+Use `--wpm` to set the words per minute of the Morse code generated.
 
 For example to play all keypresses at 30 WPM
 
