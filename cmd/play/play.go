@@ -20,11 +20,12 @@ var (
 var subCmd = &cobra.Command{
 	Use:   "play",
 	Short: "Play morse code from the command line or file",
-	Long: `
+	Long: strings.ReplaceAll(`
 
 This plays morse code from the command line or from a file with the
---file flag or from stdin with the --stdin flag.
-`,
+|--file| flag or from stdin with the |--stdin| flag.
+
+`, "|", "`"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run(args)
 	},
@@ -34,8 +35,8 @@ func init() {
 	cmd.Root.AddCommand(subCmd)
 	flags := subCmd.Flags()
 	cwflags.Add(flags)
-	flags.StringVarP(&file, "file", "", "", "File to play morse from (optional)")
-	flags.BoolVarP(&stdin, "stdin", "", false, "If set play morse from stdin")
+	flags.StringVarP(&file, "file", "", "", "File to play Morse from (optional)")
+	flags.BoolVarP(&stdin, "stdin", "", false, "If set play Morse from stdin")
 }
 
 var (

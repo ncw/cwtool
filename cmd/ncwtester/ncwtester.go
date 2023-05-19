@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strings"
 	"time"
 	"unicode"
 
@@ -26,14 +27,26 @@ var (
 var subCmd = &cobra.Command{
 	Use:   "ncwtester",
 	Short: "See how your morse receiving is going",
-	Long: `This measures and keep track of your morse code learning progress.
+	Long: strings.ReplaceAll(`
+This measures and keep track of your morse code learning progress.
 
 It sends morse characters for you to receive and times how quickly you
 receive each one.
 
 It can send a group of characters and you can select which characters
 are sent.
-`,
+
+The statistics show the 50%/75%/90% percentile timings.
+
+After a round it complete it will show the cumulative statistics.
+
+It is configured with command line flags.
+
+All stats are stored in the file specified by |--log| for analysis.
+
+Setting |--group| can send multiple characters at once - it waits for
+them all to be received before carrying on.
+`, "|", "`"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run()
 	},

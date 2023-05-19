@@ -39,19 +39,36 @@ const (
 // subCmd represents the keymorse command
 var subCmd = &cobra.Command{
 	Use:   "keymorse",
-	Short: "Snoop on all keypresses and turn into morse",
-	Long: `This command installs a listener to listen to all key presses and
+	Short: "Snoop on all keypresses and turn into Morse code",
+	Long: strings.ReplaceAll(`
+
+This is a program which listens to keyboard input and plays it as
+morse code.
+
+It is intended as an aid for learning Morse code, or possibly an
+assistive aid.
+
+It needs the |sudo| program to be installed and it will run a
+subprocess using |sudo| to read the keys as this is a privileged
+operation. It will listen to all keyboards it finds (technically input
+devices with an |A| button!).
+
+This command installs a listener to listen to all key presses and
 turns them into morse code.
 
 Since it snoops key presses from all applications, it requires root
 privileges. It will use sudo to start a keylistener subprocess so
 expect a sudo prompt.
 
+Use |-wpm| to set the words per minute of the Morse code generated.
+The |-logger| is used internally when running the root process to read
+the keypresses.
+
 For example to play all keypresses at 30 WPM
 
     cwtool keymorse --wpm 30
 
-`,
+`, "|", "`"),
 	RunE: func(cmd *cobra.Command, args []string) error {
 		return run()
 	},
