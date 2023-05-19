@@ -43,7 +43,7 @@ var subCmd = &cobra.Command{
 	Long: strings.ReplaceAll(`
 
 This is a program which listens to keyboard input and plays it as
-morse code.
+Morse code.
 
 It is intended as an aid for learning Morse code, or possibly an
 assistive aid.
@@ -54,7 +54,7 @@ operation. It will listen to all keyboards it finds (technically input
 devices with an |A| button!).
 
 This command installs a listener to listen to all key presses and
-turns them into morse code.
+turns them into Morse code.
 
 Since it snoops key presses from all applications, it requires root
 privileges. It will use sudo to start a keylistener subprocess so
@@ -251,7 +251,7 @@ func runLogger(args []string) error {
 	return nil
 }
 
-// Read keys from in and send morse
+// Read keys from in and send Morse
 func runMorser(in io.Reader) error {
 	bufIn := bufio.NewReader(in)
 	opt := cwflags.NewOpt()

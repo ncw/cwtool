@@ -18,7 +18,7 @@ var Root = &cobra.Command{
 	Use:   "cwtool",
 	Short: "Show help for cwtool commands.",
 	Long: `
-Cwtool provides a suite of morse code tools.
+Cwtool provides a suite of Morse code tools.
 `,
 }
 

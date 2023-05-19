@@ -21,7 +21,7 @@ var (
 // subCmd represents the rss ommand
 var subCmd = &cobra.Command{
 	Use:   "rss",
-	Short: "Fetch RSS and turn into morse code",
+	Short: "Fetch RSS and turn into Morse code",
 	Long: strings.ReplaceAll(`
 
 This fetches an RSS feed parses it and plays the items as Morse code.
@@ -38,7 +38,7 @@ publication + RSS.
 
 Most RSS, Atom and JSON feed types are supported.
 
-The following info is played from the feed. |BT| is the morse prosign.
+The following info is played from the feed. |BT| is the Morse prosign.
 
 - Title |BT|
 - Description of feed |BT| (if |--description| is used)

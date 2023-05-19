@@ -19,10 +19,10 @@ var (
 // subCmd represents the rss ommand
 var subCmd = &cobra.Command{
 	Use:   "play",
-	Short: "Play morse code from the command line or file",
+	Short: "Play Morse code from the command line or file",
 	Long: strings.ReplaceAll(`
 
-This plays morse code from the command line or from a file with the
+This plays Morse code from the command line or from a file with the
 |--file| flag or from stdin with the |--stdin| flag.
 
 `, "|", "`"),

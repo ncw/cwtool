@@ -26,11 +26,11 @@ var (
 // subCmd represents the ncwtester command
 var subCmd = &cobra.Command{
 	Use:   "ncwtester",
-	Short: "See how your morse receiving is going",
+	Short: "See how your Morse receiving is going",
 	Long: strings.ReplaceAll(`
-This measures and keep track of your morse code learning progress.
+This measures and keep track of your Morse code learning progress.
 
-It sends morse characters for you to receive and times how quickly you
+It sends Morse characters for you to receive and times how quickly you
 receive each one.
 
 It can send a group of characters and you can select which characters

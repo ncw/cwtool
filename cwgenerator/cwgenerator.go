@@ -1,4 +1,4 @@
-// Package cwgenerator implements a morse code player to an io.Reader interface
+// Package cwgenerator implements a Morse code player to an io.Reader interface
 package cwgenerator
 
 import (
@@ -12,7 +12,7 @@ import (
 	"github.com/ncw/cwtool/cw"
 )
 
-// Generator contains state for the morse generation
+// Generator contains state for the Morse generation
 type Generator struct {
 	opt          *cw.Options
 	sequenceMu   sync.Mutex // hold mutex when adding/removing things from sequence
@@ -108,7 +108,7 @@ func (cw *Generator) Clear() {
 	cw.sampleOffset = 0
 }
 
-// Time it should take to play the morse
+// Time it should take to play the Morse
 func (cw *Generator) duration() time.Duration {
 	return time.Duration((float64(len(cw.sequence)) * wpmToDitTime(cw.opt.WPM)) * float64(time.Second))
 }

@@ -29,7 +29,7 @@ func Add(flags *pflag.FlagSet) {
 	flags.IntVarP(&channels, "channels", "c", 1, "channels to generate")
 	flags.Float64VarP(&wpm, "wpm", "", 25.0, "WPM to send at")
 	flags.Float64VarP(&farnsworth, "farnsworth", "", 0.0, "Increase character spacing to match this WPM")
-	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of morse")
+	flags.Float64VarP(&frequency, "frequency", "", 600.0, "HZ of Morse")
 	flags.StringVarP(&outputFile, "out", "", "", "WAV file for output instead of speaker")
 }
 

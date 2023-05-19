@@ -6,8 +6,8 @@ It has 4 main modes which are described below:
 
 - [cwtool keymorse](#cwtool_keymorse) - play keystrokes from all applications as Morse code (Linux only)
 - [cwtool ncwtester](#cwtool_ncwtester) - measure your reaction times when decoding Morse code
-- [cwtool play](#cwtool_play) - play morse code from the command line or a file
-- [cwtool rss](#cwtool_rss) - turn an RSS feed into morse code
+- [cwtool play](#cwtool_play) - play Morse code from the command line or a file
+- [cwtool rss](#cwtool_rss) - turn an RSS feed into Morse code
 
 ## Installation
 
@@ -58,7 +58,7 @@ Show help for cwtool commands.
 ### Synopsis
 
 
-Cwtool provides a suite of morse code tools.
+Cwtool provides a suite of Morse code tools.
 
 
 ### Options
@@ -72,9 +72,9 @@ Cwtool provides a suite of morse code tools.
 
 * [cwtool completion](#cwtool_completion)	 - Generate the autocompletion script for the specified shell
 * [cwtool keymorse](#cwtool_keymorse)	 - Snoop on all keypresses and turn into Morse code
-* [cwtool ncwtester](#cwtool_ncwtester)	 - See how your morse receiving is going
-* [cwtool play](#cwtool_play)	 - Play morse code from the command line or file
-* [cwtool rss](#cwtool_rss)	 - Fetch RSS and turn into morse code
+* [cwtool ncwtester](#cwtool_ncwtester)	 - See how your Morse receiving is going
+* [cwtool play](#cwtool_play)	 - Play Morse code from the command line or file
+* [cwtool rss](#cwtool_rss)	 - Fetch RSS and turn into Morse code
 
 
 ## cwtool completion {#cwtool_completion}
@@ -119,7 +119,7 @@ Snoop on all keypresses and turn into Morse code
 
 
 This is a program which listens to keyboard input and plays it as
-morse code.
+Morse code.
 
 It is intended as an aid for learning Morse code, or possibly an
 assistive aid.
@@ -130,7 +130,7 @@ operation. It will listen to all keyboards it finds (technically input
 devices with an `A` button!).
 
 This command installs a listener to listen to all key presses and
-turns them into morse code.
+turns them into Morse code.
 
 Since it snoops key presses from all applications, it requires root
 privileges. It will use sudo to start a keylistener subprocess so
@@ -155,7 +155,7 @@ cwtool keymorse [flags]
 ```
   -c, --channels int       channels to generate (default 1)
       --farnsworth float   Increase character spacing to match this WPM
-      --frequency float    HZ of morse (default 600)
+      --frequency float    HZ of Morse (default 600)
   -h, --help               help for keymorse
       --out string         WAV file for output instead of speaker
   -s, --samplerate int     sample rate in samples/s (default 8000)
@@ -176,14 +176,14 @@ cwtool keymorse [flags]
 ## cwtool ncwtester {#cwtool_ncwtester}
 
 
-See how your morse receiving is going
+See how your Morse receiving is going
 
 ### Synopsis
 
 
-This measures and keep track of your morse code learning progress.
+This measures and keep track of your Morse code learning progress.
 
-It sends morse characters for you to receive and times how quickly you
+It sends Morse characters for you to receive and times how quickly you
 receive each one.
 
 It can send a group of characters and you can select which characters
@@ -211,7 +211,7 @@ cwtool ncwtester [flags]
   -c, --channels int       channels to generate (default 1)
       --cutoff duration    If set, ignore stats older than this
       --farnsworth float   Increase character spacing to match this WPM
-      --frequency float    HZ of morse (default 600)
+      --frequency float    HZ of Morse (default 600)
       --group int          Send letters in groups this big (default 1)
   -h, --help               help for ncwtester
       --letters string     Letters to test (default "abcdefghijklmnopqrstuvwxyz0123456789.=/,?")
@@ -235,13 +235,13 @@ cwtool ncwtester [flags]
 ## cwtool play {#cwtool_play}
 
 
-Play morse code from the command line or file
+Play Morse code from the command line or file
 
 ### Synopsis
 
 
 
-This plays morse code from the command line or from a file with the
+This plays Morse code from the command line or from a file with the
 `--file` flag or from stdin with the `--stdin` flag.
 
 
@@ -256,7 +256,7 @@ cwtool play [flags]
   -c, --channels int       channels to generate (default 1)
       --farnsworth float   Increase character spacing to match this WPM
       --file string        File to play Morse from (optional)
-      --frequency float    HZ of morse (default 600)
+      --frequency float    HZ of Morse (default 600)
   -h, --help               help for play
       --out string         WAV file for output instead of speaker
   -s, --samplerate int     sample rate in samples/s (default 8000)
@@ -278,7 +278,7 @@ cwtool play [flags]
 ## cwtool rss {#cwtool_rss}
 
 
-Fetch RSS and turn into morse code
+Fetch RSS and turn into Morse code
 
 ### Synopsis
 
@@ -298,7 +298,7 @@ publication + RSS.
 
 Most RSS, Atom and JSON feed types are supported.
 
-The following info is played from the feed. `BT` is the morse prosign.
+The following info is played from the feed. `BT` is the Morse prosign.
 
 - Title `BT`
 - Description of feed `BT` (if `--description` is used)
@@ -332,7 +332,7 @@ cwtool rss [flags]
   -c, --channels int       channels to generate (default 1)
       --description        If set add the description too
       --farnsworth float   Increase character spacing to match this WPM
-      --frequency float    HZ of morse (default 600)
+      --frequency float    HZ of Morse (default 600)
   -h, --help               help for rss
       --out string         WAV file for output instead of speaker
   -s, --samplerate int     sample rate in samples/s (default 8000)

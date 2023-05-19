@@ -8,7 +8,7 @@ import (
 	"github.com/ncw/cwtool/cwgenerator"
 )
 
-// Player contains state for the morse generation
+// Player contains state for the Morse generation
 type Player struct {
 	generator *cwgenerator.Generator
 	opt       *cw.Options
@@ -55,7 +55,7 @@ func (p *Player) String(s string) {
 	p.kick()
 }
 
-// Sync by waiting for all the morse to be played
+// Sync by waiting for all the Morse to be played
 func (p *Player) Sync() {
 	p.kick()
 	for p.player.IsPlaying() {

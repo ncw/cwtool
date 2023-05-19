@@ -15,7 +15,7 @@ import (
 	"github.com/ncw/cwtool/cwgenerator"
 )
 
-// Player contains state for the morse generation
+// Player contains state for the Morse generation
 type Player struct {
 	generator *cwgenerator.Generator
 	opt       *cw.Options
@@ -87,7 +87,7 @@ func (p *Player) String(s string) {
 	p.generator.String(s)
 }
 
-// Sync the morse so far to the file
+// Sync the Morse so far to the file
 func (p *Player) Sync() {
 	for {
 		n, err := p.generator.Read(p.buf)
