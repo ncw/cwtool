@@ -22,7 +22,7 @@ func init() {
 var (
 	headingRe = regexp.MustCompile(`(?m)^## (.*?)$`)
 	autoGenRe = regexp.MustCompile(`(?m)^#.*?Auto generated.*?$`)
-	linkRe    = regexp.MustCompile(`(\[.*?\]\()(.*?)\.md(\))`)
+	linkRe    = regexp.MustCompile(`\[.*?\]\(.*?\.md\)`)
 )
 
 // munge the output files into a single file
@@ -34,12 +34,20 @@ func mungeFile(out *strings.Builder, fileName string) error {
 	help := string(data)
 	uname := filepath.Base(fileName)
 	uname = uname[:len(uname)-len(filepath.Ext(uname))]
-	// Add ID into main heading
-	help = headingRe.ReplaceAllString(help, "## $1 {#"+uname+"}\n")
+	// Add ID into main heading - DOESN't work on GitHub
+	// use headings with `-` instead of ` ` instead
+	// help = headingRe.ReplaceAllString(help, "## $1 {#"+uname+"}\n")
 	// Remove auto generated lines
 	help = autoGenRe.ReplaceAllString(help, "")
 	// Munge links to be internal
-	help = linkRe.ReplaceAllString(help, "$1#$2$3")
+	help = linkRe.ReplaceAllStringFunc(help, func(s string) string {
+		i := strings.IndexRune(s, '(')
+		text := s[:i]
+		link := s[i+1 : len(s)-1]
+		link = strings.TrimSuffix(link, ".md")
+		link = strings.ReplaceAll(link, "_", "-")
+		return text + "(#" + link + ")"
+	})
 	// Send to output
 	_, err = out.WriteString(help)
 	return err

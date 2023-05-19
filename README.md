@@ -7,10 +7,10 @@ Morse code is often known as Carrier Wave or CW hence the name
 
 It has 4 main modes which are described below:
 
-- [cwtool keymorse](#cwtool_keymorse) - play keystrokes from all applications as Morse code (Linux only)
-- [cwtool ncwtester](#cwtool_ncwtester) - measure your reaction times when decoding Morse code
-- [cwtool play](#cwtool_play) - play Morse code from the command line or a file
-- [cwtool rss](#cwtool_rss) - turn an RSS feed into Morse code
+- [cwtool keymorse](#cwtool-keymorse) - play keystrokes from all applications as Morse code (Linux only)
+- [cwtool ncwtester](#cwtool-ncwtester) - measure your reaction times when decoding Morse code
+- [cwtool play](#cwtool-play) - play Morse code from the command line or a file
+- [cwtool rss](#cwtool-rss) - turn an RSS feed into Morse code
 
 ## Installation
 
@@ -53,8 +53,7 @@ Here is the full documentation for each command of the cwtool.
 
 <!-- auto generated from here on -->
 
-## cwtool {#cwtool}
-
+## cwtool
 
 Show help for cwtool commands.
 
@@ -73,15 +72,14 @@ Cwtool provides a suite of Morse code tools.
 
 ### SEE ALSO
 
-* [cwtool completion](#cwtool_completion)	 - Generate the autocompletion script for the specified shell
-* [cwtool keymorse](#cwtool_keymorse)	 - Snoop on all keypresses and turn into Morse code
-* [cwtool ncwtester](#cwtool_ncwtester)	 - See how your Morse receiving is going
-* [cwtool play](#cwtool_play)	 - Play Morse code from the command line or file
-* [cwtool rss](#cwtool_rss)	 - Fetch RSS and turn into Morse code
+* [cwtool completion](#cwtool-completion)	 - Generate the autocompletion script for the specified shell
+* [cwtool keymorse](#cwtool-keymorse)	 - Snoop on all keypresses and turn into Morse code
+* [cwtool ncwtester](#cwtool-ncwtester)	 - See how your Morse receiving is going
+* [cwtool play](#cwtool-play)	 - Play Morse code from the command line or file
+* [cwtool rss](#cwtool-rss)	 - Fetch RSS and turn into Morse code
 
 
-## cwtool completion {#cwtool_completion}
-
+## cwtool completion
 
 Generate the autocompletion script for the specified shell
 
@@ -106,14 +104,13 @@ See each sub-command's help for details on how to use the generated script.
 ### SEE ALSO
 
 * [cwtool](#cwtool)	 - Show help for cwtool commands.
-* [cwtool completion bash](#cwtool_completion_bash)	 - Generate the autocompletion script for bash
-* [cwtool completion fish](#cwtool_completion_fish)	 - Generate the autocompletion script for fish
-* [cwtool completion powershell](#cwtool_completion_powershell)	 - Generate the autocompletion script for powershell
-* [cwtool completion zsh](#cwtool_completion_zsh)	 - Generate the autocompletion script for zsh
+* [cwtool completion bash](#cwtool-completion-bash)	 - Generate the autocompletion script for bash
+* [cwtool completion fish](#cwtool-completion-fish)	 - Generate the autocompletion script for fish
+* [cwtool completion powershell](#cwtool-completion-powershell)	 - Generate the autocompletion script for powershell
+* [cwtool completion zsh](#cwtool-completion-zsh)	 - Generate the autocompletion script for zsh
 
 
-## cwtool keymorse {#cwtool_keymorse}
-
+## cwtool keymorse
 
 Snoop on all keypresses and turn into Morse code
 
@@ -176,8 +173,7 @@ cwtool keymorse [flags]
 * [cwtool](#cwtool)	 - Show help for cwtool commands.
 
 
-## cwtool ncwtester {#cwtool_ncwtester}
-
+## cwtool ncwtester
 
 See how your Morse receiving is going
 
@@ -235,8 +231,7 @@ cwtool ncwtester [flags]
 * [cwtool](#cwtool)	 - Show help for cwtool commands.
 
 
-## cwtool play {#cwtool_play}
-
+## cwtool play
 
 Play Morse code from the command line or file
 
@@ -278,8 +273,7 @@ cwtool play [flags]
 * [cwtool](#cwtool)	 - Show help for cwtool commands.
 
 
-## cwtool rss {#cwtool_rss}
-
+## cwtool rss
 
 Fetch RSS and turn into Morse code
 
@@ -354,8 +348,7 @@ cwtool rss [flags]
 * [cwtool](#cwtool)	 - Show help for cwtool commands.
 
 
-## cwtool completion bash {#cwtool_completion_bash}
-
+## cwtool completion bash
 
 Generate the autocompletion script for bash
 
@@ -402,11 +395,10 @@ cwtool completion bash
 
 ### SEE ALSO
 
-* [cwtool completion](#cwtool_completion)	 - Generate the autocompletion script for the specified shell
+* [cwtool completion](#cwtool-completion)	 - Generate the autocompletion script for the specified shell
 
 
-## cwtool completion fish {#cwtool_completion_fish}
-
+## cwtool completion fish
 
 Generate the autocompletion script for fish
 
@@ -444,11 +436,10 @@ cwtool completion fish [flags]
 
 ### SEE ALSO
 
-* [cwtool completion](#cwtool_completion)	 - Generate the autocompletion script for the specified shell
+* [cwtool completion](#cwtool-completion)	 - Generate the autocompletion script for the specified shell
 
 
-## cwtool completion powershell {#cwtool_completion_powershell}
-
+## cwtool completion powershell
 
 Generate the autocompletion script for powershell
 
@@ -483,11 +474,10 @@ cwtool completion powershell [flags]
 
 ### SEE ALSO
 
-* [cwtool completion](#cwtool_completion)	 - Generate the autocompletion script for the specified shell
+* [cwtool completion](#cwtool-completion)	 - Generate the autocompletion script for the specified shell
 
 
-## cwtool completion zsh {#cwtool_completion_zsh}
-
+## cwtool completion zsh
 
 Generate the autocompletion script for zsh
 
@@ -536,6 +526,6 @@ cwtool completion zsh [flags]
 
 ### SEE ALSO
 
-* [cwtool completion](#cwtool_completion)	 - Generate the autocompletion script for the specified shell
+* [cwtool completion](#cwtool-completion)	 - Generate the autocompletion script for the specified shell
 
 
