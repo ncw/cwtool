@@ -1,6 +1,9 @@
 # cwtool for Morse code learning by M5NCW
 
-cwtool is a command line program to help you learn and practice Morse code.
+`cwtool` is a command line program to help you learn and practice Morse code.
+
+Morse code is often known as Carrier Wave or CW hence the name
+`cwtool` - a tool for generating CW.
 
 It has 4 main modes which are described below:
 
